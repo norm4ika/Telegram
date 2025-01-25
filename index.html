@@ -85,8 +85,6 @@
       groups: false
     };
 
-    // Ton Connect SDK Initialization
-    const tonConnect = new TonConnect();
 
     // Fetch and display user's balance
     async function fetchBalance(username = "DILLROCHA71") {
@@ -209,7 +207,10 @@
       else if (page === "friends") renderFriends();
       else if (page === "earn") renderEarn();
     }
-
+// TonConnect-ის ინიციალიზაცია
+const tonConnect = new TonConnect({
+    manifestUrl: "https://telegram-rust.vercel.app/tonconnect-manifest.json"
+});
 // Connect Wallet
 async function connectWallet() {
   try {
