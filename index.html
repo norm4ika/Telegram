@@ -43,9 +43,6 @@
       border-radius: 5px;
       padding: 0.5rem 1rem;
     }
-    .main-content {
-      padding: 1rem;
-    }
     .user-list, .task-list {
       text-align: left;
       margin: 1rem auto;
@@ -53,11 +50,6 @@
       background-color: #1f1f1f;
       border-radius: 8px;
       max-width: 400px;
-    }
-    .user-list p, .task-list p {
-      display: flex;
-      justify-content: space-between;
-      margin: 0.5rem 0;
     }
     .referral-link {
       margin: 1rem 0;
@@ -71,13 +63,7 @@
 </head>
 <body>
   <div id="app-container" class="container">
-    <!-- Initial content -->
-    <div id="main-content">
-      <h1>🐾 PawLynx Bot</h1>
-      <h2 id="user-balance">💰 0.10 Ton</h2>
-      <h3>🏅 Rank: Newcomer ✨</h3>
-      <div class="highlight">First FREE Lynx</div>
-    </div>
+    <!-- Main content dynamically updated -->
   </div>
 
   <!-- Footer Navigation -->
@@ -89,69 +75,144 @@
   </div>
 
   <script>
-    // მომხმარებლების მონაცემები
-    const users = [
-      { name: "DILLROCHA71", score: 50 },
-      { name: "Mukxit98", score: 30 },
-      { name: "User12345", score: 20 }
-    ];
+    const API_URL = "http://localhost:3000"; // სერვერის URL
+    let balance = 0;
+    let completedTasks = {
+      profile: false,
+      invite: false,
+      groups: false
+    };
 
-    let balance = 0.10; // მომხმარებლის ბალანსი
-
-    function navigateTo(page, event) {
-      event.preventDefault();
-      
-      // ყველა ღილაკის "active" კლასის მოხსნა
-      document.querySelectorAll('.footer-nav a').forEach(link => link.classList.remove('active'));
-      event.target.classList.add('active');
-      
-      // კონტენტის წაშლა
-      const appContainer = document.getElementById('app-container');
-      appContainer.innerHTML = ''; // ვასუფთავებთ კონტეინერს
-      
-      // ახალი კონტენტის დამატება
-      if (page === 'home') {
-        appContainer.innerHTML = `
-          <div id="main-content">
-            <h1>🐾 PawLynx Bot</h1>
-            <h2 id="user-balance">💰 ${balance.toFixed(2)} Ton</h2>
-            <h3>🏅 Rank: Newcomer ✨</h3>
-            <div class="highlight">First FREE Lynx</div>
-          </div>
-        `;
-      } else if (page === 'leaders') {
-        const leaderboard = users
-          .sort((a, b) => b.score - a.score)
-          .map((user, index) => `<p>${index + 1}. ${user.name} - ${user.score} Ton</p>`)
-          .join('');
-        appContainer.innerHTML = `
-          <div id="main-content">
-            <h1>🏆 Leaderboard</h1>
-            <div class="user-list">${leaderboard}</div>
-          </div>
-        `;
-      } else if (page === 'friends') {
-        const referralLink = "https://telegram.me/PawLynxBot?start=ref123";
-        appContainer.innerHTML = `
-          <div id="main-content">
-            <h1>👥 Your Friends</h1>
-            <p>Invite your friends and earn more Ton coins!</p>
-            <div class="referral-link">${referralLink}</div>
-          </div>
-        `;
-      } else if (page === 'earn') {
-        appContainer.innerHTML = `
-          <div id="main-content">
-            <h1>💰 Earn Rewards</h1>
-            <div class="task-list">
-              <p>✅ Complete profile <span>+0.10 Ton</span></p>
-              <p>✅ Invite 1 friend <span>+0.50 Ton</span></p>
-              <p>✅ Join 5 groups <span>+0.20 Ton</span></p>
-            </div>
-          </div>
-        `;
+    // Fetch and display user's balance
+    async function fetchBalance(username = "DILLROCHA71") {
+      try {
+        const response = await fetch(`${API_URL}/balance/${username}`);
+        if (response.ok) {
+          const { balance: userBalance } = await response.json();
+          balance = userBalance;
+          renderHome();
+        }
+      } catch (error) {
+        console.error("Error fetching balance:", error);
       }
     }
+
+    // Update balance
+    async function updateBalance(username, amount) {
+      try {
+        const response = await fetch(`${API_URL}/update-balance`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, amount }),
+        });
+        if (response.ok) {
+          const { newBalance } = await response.json();
+          balance = newBalance;
+          alert("Balance updated successfully!");
+        }
+      } catch (error) {
+        console.error("Error updating balance:", error);
+      }
+    }
+
+    // Fetch and display leaderboard
+    async function fetchLeaderboard() {
+      try {
+        const response = await fetch(`${API_URL}/leaderboard`);
+        if (response.ok) {
+          const leaderboard = await response.json();
+          renderLeaderboard(leaderboard);
+        }
+      } catch (error) {
+        console.error("Error fetching leaderboard:", error);
+      }
+    }
+
+    // Task completion
+    async function completeTask(task, reward) {
+      if (!completedTasks[task]) {
+        completedTasks[task] = true;
+        await updateBalance("DILLROCHA71", reward);
+        fetchLeaderboard();
+      }
+    }
+
+    // Render Home Page
+    function renderHome() {
+      document.getElementById("app-container").innerHTML = `
+        <div id="main-content">
+          <h1>🐾 PawLynx Bot</h1>
+          <h2 id="user-balance">💰 ${balance.toFixed(2)} Ton</h2>
+          <h3>🏅 Rank: Newcomer ✨</h3>
+          <div class="highlight">First FREE PawLynx Claims</div>
+          <p><strong>Wallet:</strong> <span id="wallet-address">Not connected</span></p>
+          <button onclick="connectWallet()">Connect Wallet</button>
+        </div>
+      `;
+    }
+
+    // Render Leaderboard Page
+    function renderLeaderboard(leaderboard) {
+      const leaderboardHTML = leaderboard
+        .map(user => `<p>${user.rank}. ${user.username} - ${user.balance.toFixed(2)} Ton</p>`)
+        .join("");
+      document.getElementById("app-container").innerHTML = `
+        <div id="main-content">
+          <h1>🏆 Leaderboard</h1>
+          <div class="user-list">${leaderboardHTML}</div>
+        </div>
+      `;
+    }
+
+    // Render Friends Page
+    function renderFriends() {
+      const referralLink = "https://telegram.me/PawLynxBot?start=ref123";
+      document.getElementById("app-container").innerHTML = `
+        <div id="main-content">
+          <h1>👥 Your Friends</h1>
+          <p>Invite your friends and earn more Ton coins!</p>
+          <div class="referral-link">${referralLink}</div>
+        </div>
+      `;
+    }
+
+    // Render Earn Rewards Page
+    function renderEarn() {
+      document.getElementById("app-container").innerHTML = `
+        <div id="main-content">
+          <h1>💰 Earn Rewards</h1>
+          <div class="task-list">
+            <p><input type="checkbox" onchange="completeTask('profile', 0.10)"> Complete profile <span>+0.10 Ton</span></p>
+            <p><input type="checkbox" onchange="completeTask('invite', 0.50)"> Invite 1 friend <span>+0.50 Ton</span></p>
+            <p><input type="checkbox" onchange="completeTask('groups', 0.20)"> Join 5 groups <span>+0.20 Ton</span></p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Navigation
+    function navigateTo(page, event) {
+      event.preventDefault();
+      document.querySelectorAll(".footer-nav a").forEach(link => link.classList.remove("active"));
+      event.target.classList.add("active");
+
+      if (page === "home") renderHome();
+      else if (page === "leaders") fetchLeaderboard();
+      else if (page === "friends") renderFriends();
+      else if (page === "earn") renderEarn();
+    }
+
+    // Connect Wallet
+    function connectWallet() {
+      const wallet = prompt("Enter your Wallet Address:");
+      if (wallet) {
+        document.getElementById("wallet-address").innerText = wallet;
+        alert("Wallet connected successfully!");
+      }
+    }
+
+    // Initial Load
+    fetchBalance();
   </script>
 </body>
 </html>
