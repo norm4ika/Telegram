@@ -46,7 +46,7 @@
     .main-content {
       padding: 1rem;
     }
-    .user-list {
+    .user-list, .task-list {
       text-align: left;
       margin: 1rem auto;
       padding: 1rem;
@@ -54,10 +54,18 @@
       border-radius: 8px;
       max-width: 400px;
     }
-    .user-list p {
+    .user-list p, .task-list p {
       display: flex;
       justify-content: space-between;
       margin: 0.5rem 0;
+    }
+    .referral-link {
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background-color: #333;
+      color: #ffcc00;
+      text-align: center;
+      border-radius: 5px;
     }
   </style>
 </head>
@@ -69,11 +77,6 @@
       <h2 id="user-balance">💰 0.10 Ton</h2>
       <h3>🏅 Rank: Newcomer ✨</h3>
       <div class="highlight">First FREE Lynx</div>
-      <div class="user-list">
-        <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
-        <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
-        <p><strong>User12345</strong> <span>0.10 Ton</span></p>
-      </div>
     </div>
   </div>
 
@@ -86,7 +89,15 @@
   </div>
 
   <script>
-    // მთავარი კონტენტის განახლების ფუნქცია
+    // მომხმარებლების მონაცემები
+    const users = [
+      { name: "DILLROCHA71", score: 50 },
+      { name: "Mukxit98", score: 30 },
+      { name: "User12345", score: 20 }
+    ];
+
+    let balance = 0.10; // მომხმარებლის ბალანსი
+
     function navigateTo(page, event) {
       event.preventDefault();
       
@@ -103,37 +114,40 @@
         appContainer.innerHTML = `
           <div id="main-content">
             <h1>🐾 PawLynx Bot</h1>
-            <h2 id="user-balance">💰 0.10 Ton</h2>
+            <h2 id="user-balance">💰 ${balance.toFixed(2)} Ton</h2>
             <h3>🏅 Rank: Newcomer ✨</h3>
             <div class="highlight">First FREE Lynx</div>
-            <div class="user-list">
-              <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
-              <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
-              <p><strong>User12345</strong> <span>0.10 Ton</span></p>
-            </div>
           </div>
         `;
       } else if (page === 'leaders') {
+        const leaderboard = users
+          .sort((a, b) => b.score - a.score)
+          .map((user, index) => `<p>${index + 1}. ${user.name} - ${user.score} Ton</p>`)
+          .join('');
         appContainer.innerHTML = `
           <div id="main-content">
             <h1>🏆 Leaderboard</h1>
-            <p>1. DILLROCHA71 - 0.50 Ton</p>
-            <p>2. Mukxit98 - 0.30 Ton</p>
-            <p>3. User12345 - 0.20 Ton</p>
+            <div class="user-list">${leaderboard}</div>
           </div>
         `;
       } else if (page === 'friends') {
+        const referralLink = "https://telegram.me/PawLynxBot?start=ref123";
         appContainer.innerHTML = `
           <div id="main-content">
             <h1>👥 Your Friends</h1>
             <p>Invite your friends and earn more Ton coins!</p>
+            <div class="referral-link">${referralLink}</div>
           </div>
         `;
       } else if (page === 'earn') {
         appContainer.innerHTML = `
           <div id="main-content">
             <h1>💰 Earn Rewards</h1>
-            <p>Complete daily tasks and participate in challenges to earn Ton.</p>
+            <div class="task-list">
+              <p>✅ Complete profile <span>+0.10 Ton</span></p>
+              <p>✅ Invite 1 friend <span>+0.50 Ton</span></p>
+              <p>✅ Join 5 groups <span>+0.20 Ton</span></p>
+            </div>
           </div>
         `;
       }
