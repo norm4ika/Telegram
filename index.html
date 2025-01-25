@@ -210,22 +210,49 @@
       else if (page === "earn") renderEarn();
     }
 
-    // Connect Wallet
-    async function connectWallet() {
-      try {
-        await tonConnect.connect();
-        const walletInfo = await tonConnect.getWallet();
-        if (walletInfo && walletInfo.account.address) {
-          document.getElementById("wallet-address").innerText = walletInfo.account.address;
-          alert("Wallet connected successfully!");
-        } else {
-          alert("Failed to connect wallet.");
-        }
-      } catch (error) {
-        console.error("Error connecting wallet:", error);
-        alert("An error occurred while connecting wallet.");
+// Connect Wallet
+async function connectWallet() {
+  try {
+    // დაწყება TonConnect-თან
+    await tonConnect.connect();
+    
+    // ვალეტის ინფორმაციის მიღება
+    const walletInfo = await tonConnect.getWallet();
+    
+    if (walletInfo && walletInfo.account && walletInfo.account.address) {
+      const walletAddress = walletInfo.account.address;
+      
+      // Wallet მისამართის ჩვენება მომხმარებელს
+      document.getElementById("wallet-address").innerText = walletAddress;
+
+      // Wallet მისამართის API-ზე შენახვა
+      const response = await fetch("http://localhost:3000/save-wallet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: "DILLROCHA71", // შეცვალეთ საჭიროებისამებრ
+          walletAddress: walletAddress,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert("Wallet connected and saved successfully!");
+      } else {
+        alert("Wallet connected, but failed to save on the server.");
+        console.error("Save wallet error:", data.error);
       }
+    } else {
+      alert("Failed to connect wallet. Please try again.");
     }
+  } catch (error) {
+    console.error("Error connecting wallet:", error);
+    alert("An error occurred while connecting wallet.");
+  }
+}
 
     // Initial Load
     fetchBalance();
