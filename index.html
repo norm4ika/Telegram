@@ -53,17 +53,61 @@
     .button:hover {
       background-color: #555;
     }
+    .user-list {
+      text-align: left;
+      margin: 1rem auto;
+      padding: 1rem;
+      background-color: #1f1f1f;
+      border-radius: 8px;
+      max-width: 400px;
+    }
+    .user-list p {
+      display: flex;
+      justify-content: space-between;
+      margin: 0.5rem 0;
+    }
+    .highlight {
+      background-color: #ffcc00;
+      color: #000;
+      border-radius: 5px;
+      padding: 0.2rem 0.5rem;
+    }
+    .header-icons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .header-icons img {
+      height: 30px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>🐾 PawLynx Bot</h1>
-    <h2>💰 378.35K wPAWS</h2>
+    <!-- Header with lynx heads -->
+    <div class="header-icons">
+      <img src="https://i.imgur.com/K9tXaJF.png" alt="Lynx Head" />
+      <h1>PawLynx Bot</h1>
+      <img src="https://i.imgur.com/K9tXaJF.png" alt="Lynx Head" />
+    </div>
+
+    <!-- User balance -->
+    <h2 id="user-balance">💰 0.10 Ton</h2>
+
+    <!-- Rank -->
     <h3>🏅 Rank: Newcomer ✨</h3>
-    <div class="main-content" id="main-content">
-      <button class="button" onclick="showWallets()">🔹 Your wallets</button>
-      <button class="button" onclick="checkEligibility()">✅ Check eligibility</button>
-      <button class="button" onclick="checkRewards()">⭐ Check your rewards</button>
+
+    <!-- Free Lynx banner -->
+    <div class="main-content highlight">
+      <h3>First FREE Lynx</h3>
+    </div>
+
+    <!-- User list -->
+    <div class="user-list" id="user-list">
+      <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
+      <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
+      <p><strong>User12345</strong> <span>0.10 Ton</span></p>
     </div>
   </div>
 
@@ -76,40 +120,24 @@
   </div>
 
   <script>
-    // ფუნქციები ღილაკებისთვის
-    function showWallets() {
-      const mainContent = document.getElementById('main-content');
-      mainContent.innerHTML = `<p>🔹 Your Wallets:</p><p>0x1234567890abcdef</p>`;
-    }
-
-    function checkEligibility() {
-      const mainContent = document.getElementById('main-content');
-      mainContent.innerHTML = `<p>✅ You are eligible for rewards!</p>`;
-    }
-
-    function checkRewards() {
-      const mainContent = document.getElementById('main-content');
-      mainContent.innerHTML = `<p>🏆 Your Rewards:</p><p>No rewards available.</p>`;
-    }
-
-    // ნავიგაციის მენიუს მართვა
+    // ნავიგაციის მენიუ
     function navigateTo(page) {
-      const mainContent = document.getElementById('main-content');
+      const mainContent = document.getElementById('user-list');
       document.querySelectorAll('.footer-nav a').forEach(link => link.classList.remove('active'));
       event.target.classList.add('active');
 
       if (page === 'home') {
         mainContent.innerHTML = `
-          <button class="button" onclick="showWallets()">🔹 Your wallets</button>
-          <button class="button" onclick="checkEligibility()">✅ Check eligibility</button>
-          <button class="button" onclick="checkRewards()">⭐ Check your rewards</button>
+          <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
+          <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
+          <p><strong>User12345</strong> <span>0.10 Ton</span></p>
         `;
       } else if (page === 'leaders') {
         mainContent.innerHTML = `<p>🏆 Leaderboard:</p><p>Coming soon...</p>`;
       } else if (page === 'friends') {
         mainContent.innerHTML = `<p>👥 Your Friends:</p><p>Invite your friends to join!</p>`;
       } else if (page === 'earn') {
-        mainContent.innerHTML = `<p>💰 Earn Rewards:</p><p>Complete tasks to earn more wPAWS.</p>`;
+        mainContent.innerHTML = `<p>💰 Earn Rewards:</p><p>Complete tasks to earn more Ton.</p>`;
       }
     }
   </script>
