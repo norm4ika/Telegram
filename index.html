@@ -17,9 +17,6 @@
       padding: 1rem;
       text-align: center;
     }
-    .main-content {
-      margin-top: 2rem;
-    }
     .footer-nav {
       position: fixed;
       bottom: 0;
@@ -40,18 +37,14 @@
     .footer-nav a.active {
       color: #ffcc00;
     }
-    .button {
-      display: block;
-      margin: 1rem auto;
-      padding: 1rem;
-      border: none;
-      border-radius: 8px;
-      color: #fff;
-      background-color: #333;
-      cursor: pointer;
+    .highlight {
+      background-color: #ffcc00;
+      color: #000;
+      border-radius: 5px;
+      padding: 0.5rem 1rem;
     }
-    .button:hover {
-      background-color: #555;
+    .main-content {
+      padding: 1rem;
     }
     .user-list {
       text-align: left;
@@ -66,78 +59,83 @@
       justify-content: space-between;
       margin: 0.5rem 0;
     }
-    .highlight {
-      background-color: #ffcc00;
-      color: #000;
-      border-radius: 5px;
-      padding: 0.2rem 0.5rem;
-    }
-    .header-icons {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-    .header-icons img {
-      height: 30px;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header with lynx heads -->
-    <div class="header-icons">
-      <img src="https://i.imgur.com/K9tXaJF.png" alt="Lynx Head" />
-      <h1>PawLynx Bot</h1>
-      <img src="https://i.imgur.com/K9tXaJF.png" alt="Lynx Head" />
-    </div>
-
-    <!-- User balance -->
-    <h2 id="user-balance">💰 0.10 Ton</h2>
-
-    <!-- Rank -->
-    <h3>🏅 Rank: Newcomer ✨</h3>
-
-    <!-- Free Lynx banner -->
-    <div class="main-content highlight">
-      <h3>First FREE Lynx</h3>
-    </div>
-
-    <!-- User list -->
-    <div class="user-list" id="user-list">
-      <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
-      <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
-      <p><strong>User12345</strong> <span>0.10 Ton</span></p>
+  <div id="app-container" class="container">
+    <!-- Initial content -->
+    <div id="main-content">
+      <h1>🐾 PawLynx Bot</h1>
+      <h2 id="user-balance">💰 0.10 Ton</h2>
+      <h3>🏅 Rank: Newcomer ✨</h3>
+      <div class="highlight">First FREE Lynx</div>
+      <div class="user-list">
+        <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
+        <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
+        <p><strong>User12345</strong> <span>0.10 Ton</span></p>
+      </div>
     </div>
   </div>
 
   <!-- Footer Navigation -->
   <div class="footer-nav">
-    <a href="#" class="active" onclick="navigateTo('home')">Home</a>
-    <a href="#" onclick="navigateTo('leaders')">Leaders</a>
-    <a href="#" onclick="navigateTo('friends')">Friends</a>
-    <a href="#" onclick="navigateTo('earn')">Earn</a>
+    <a href="#" class="active" onclick="navigateTo('home', event)">Home</a>
+    <a href="#" onclick="navigateTo('leaders', event)">Leaders</a>
+    <a href="#" onclick="navigateTo('friends', event)">Friends</a>
+    <a href="#" onclick="navigateTo('earn', event)">Earn</a>
   </div>
 
   <script>
-    // ნავიგაციის მენიუ
-    function navigateTo(page) {
-      const mainContent = document.getElementById('user-list');
+    // მთავარი კონტენტის განახლების ფუნქცია
+    function navigateTo(page, event) {
+      event.preventDefault();
+      
+      // ყველა ღილაკის "active" კლასის მოხსნა
       document.querySelectorAll('.footer-nav a').forEach(link => link.classList.remove('active'));
       event.target.classList.add('active');
-
+      
+      // კონტენტის წაშლა
+      const appContainer = document.getElementById('app-container');
+      appContainer.innerHTML = ''; // ვასუფთავებთ კონტეინერს
+      
+      // ახალი კონტენტის დამატება
       if (page === 'home') {
-        mainContent.innerHTML = `
-          <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
-          <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
-          <p><strong>User12345</strong> <span>0.10 Ton</span></p>
+        appContainer.innerHTML = `
+          <div id="main-content">
+            <h1>🐾 PawLynx Bot</h1>
+            <h2 id="user-balance">💰 0.10 Ton</h2>
+            <h3>🏅 Rank: Newcomer ✨</h3>
+            <div class="highlight">First FREE Lynx</div>
+            <div class="user-list">
+              <p><strong>DILLROCHA71</strong> <span>0.10 Ton</span></p>
+              <p><strong>Mukxit98</strong> <span>0.10 Ton</span></p>
+              <p><strong>User12345</strong> <span>0.10 Ton</span></p>
+            </div>
+          </div>
         `;
       } else if (page === 'leaders') {
-        mainContent.innerHTML = `<p>🏆 Leaderboard:</p><p>Coming soon...</p>`;
+        appContainer.innerHTML = `
+          <div id="main-content">
+            <h1>🏆 Leaderboard</h1>
+            <p>1. DILLROCHA71 - 0.50 Ton</p>
+            <p>2. Mukxit98 - 0.30 Ton</p>
+            <p>3. User12345 - 0.20 Ton</p>
+          </div>
+        `;
       } else if (page === 'friends') {
-        mainContent.innerHTML = `<p>👥 Your Friends:</p><p>Invite your friends to join!</p>`;
+        appContainer.innerHTML = `
+          <div id="main-content">
+            <h1>👥 Your Friends</h1>
+            <p>Invite your friends and earn more Ton coins!</p>
+          </div>
+        `;
       } else if (page === 'earn') {
-        mainContent.innerHTML = `<p>💰 Earn Rewards:</p><p>Complete tasks to earn more Ton.</p>`;
+        appContainer.innerHTML = `
+          <div id="main-content">
+            <h1>💰 Earn Rewards</h1>
+            <p>Complete daily tasks and participate in challenges to earn Ton.</p>
+          </div>
+        `;
       }
     }
   </script>
