@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tonconnect/sdk/dist/tonconnect-sdk.min.js"></script>
   <title>PawLynx Bot</title>
   <style>
     body {
@@ -83,6 +84,9 @@
       groups: false
     };
 
+    // Ton Connect SDK Initialization
+    const tonConnect = new TonConnect();
+
     // Fetch and display user's balance
     async function fetchBalance(username = "DILLROCHA71") {
       try {
@@ -146,9 +150,12 @@
           <h3>🏅 Rank: Newcomer ✨</h3>
           <div class="highlight">First FREE PawLynx Claims</div>
           <p><strong>Wallet:</strong> <span id="wallet-address">Not connected</span></p>
-          <button onclick="connectWallet()">Connect Wallet</button>
+          <button id="connect-wallet-btn">Connect Wallet</button>
         </div>
       `;
+      document
+        .getElementById("connect-wallet-btn")
+        .addEventListener("click", connectWallet);
     }
 
     // Render Leaderboard Page
@@ -203,11 +210,19 @@
     }
 
     // Connect Wallet
-    function connectWallet() {
-      const wallet = prompt("Enter your Wallet Address:");
-      if (wallet) {
-        document.getElementById("wallet-address").innerText = wallet;
-        alert("Wallet connected successfully!");
+    async function connectWallet() {
+      try {
+        await tonConnect.connect();
+        const walletInfo = await tonConnect.getWallet();
+        if (walletInfo && walletInfo.account.address) {
+          document.getElementById("wallet-address").innerText = walletInfo.account.address;
+          alert("Wallet connected successfully!");
+        } else {
+          alert("Failed to connect wallet.");
+        }
+      } catch (error) {
+        console.error("Error connecting wallet:", error);
+        alert("An error occurred while connecting wallet.");
       }
     }
 
