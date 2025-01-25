@@ -12,52 +12,106 @@
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
     }
-    .header {
-      margin-bottom: 2rem;
+    .container {
+      padding: 1rem;
       text-align: center;
     }
-    .header h1 {
-      font-size: 2.5rem;
+    .main-content {
+      margin-top: 2rem;
     }
-    .header h2 {
-      font-size: 1.5rem;
-      color: #ffcc00;
-    }
-    .buttons {
+    .footer-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #1f1f1f;
       display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      justify-content: space-around;
+      padding: 0.5rem 0;
     }
-    .buttons a {
+    .footer-nav a {
       text-decoration: none;
       color: #fff;
-      background-color: #333;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      text-align: center;
       font-size: 1rem;
+      text-align: center;
+      flex: 1;
     }
-    .buttons a:hover {
+    .footer-nav a.active {
+      color: #ffcc00;
+    }
+    .button {
+      display: block;
+      margin: 1rem auto;
+      padding: 1rem;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      background-color: #333;
+      cursor: pointer;
+    }
+    .button:hover {
       background-color: #555;
     }
   </style>
 </head>
 <body>
-  <div class="header">
+  <div class="container">
     <h1>🐾 PawLynx Bot</h1>
     <h2>💰 378.35K wPAWS</h2>
     <h3>🏅 Rank: Newcomer ✨</h3>
+    <div class="main-content" id="main-content">
+      <button class="button" onclick="showWallets()">🔹 Your wallets</button>
+      <button class="button" onclick="checkEligibility()">✅ Check eligibility</button>
+      <button class="button" onclick="checkRewards()">⭐ Check your rewards</button>
+    </div>
   </div>
-  <div class="buttons">
-    <a href="#" id="wallets">🔹 Your wallets</a>
-    <a href="#" id="eligibility">✅ Check eligibility</a>
-    <a href="#" id="rewards">⭐ Check your rewards</a>
+
+  <!-- Footer Navigation -->
+  <div class="footer-nav">
+    <a href="#" class="active" onclick="navigateTo('home')">Home</a>
+    <a href="#" onclick="navigateTo('leaders')">Leaders</a>
+    <a href="#" onclick="navigateTo('friends')">Friends</a>
+    <a href="#" onclick="navigateTo('earn')">Earn</a>
   </div>
+
+  <script>
+    // ფუნქციები ღილაკებისთვის
+    function showWallets() {
+      const mainContent = document.getElementById('main-content');
+      mainContent.innerHTML = `<p>🔹 Your Wallets:</p><p>0x1234567890abcdef</p>`;
+    }
+
+    function checkEligibility() {
+      const mainContent = document.getElementById('main-content');
+      mainContent.innerHTML = `<p>✅ You are eligible for rewards!</p>`;
+    }
+
+    function checkRewards() {
+      const mainContent = document.getElementById('main-content');
+      mainContent.innerHTML = `<p>🏆 Your Rewards:</p><p>No rewards available.</p>`;
+    }
+
+    // ნავიგაციის მენიუს მართვა
+    function navigateTo(page) {
+      const mainContent = document.getElementById('main-content');
+      document.querySelectorAll('.footer-nav a').forEach(link => link.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (page === 'home') {
+        mainContent.innerHTML = `
+          <button class="button" onclick="showWallets()">🔹 Your wallets</button>
+          <button class="button" onclick="checkEligibility()">✅ Check eligibility</button>
+          <button class="button" onclick="checkRewards()">⭐ Check your rewards</button>
+        `;
+      } else if (page === 'leaders') {
+        mainContent.innerHTML = `<p>🏆 Leaderboard:</p><p>Coming soon...</p>`;
+      } else if (page === 'friends') {
+        mainContent.innerHTML = `<p>👥 Your Friends:</p><p>Invite your friends to join!</p>`;
+      } else if (page === 'earn') {
+        mainContent.innerHTML = `<p>💰 Earn Rewards:</p><p>Complete tasks to earn more wPAWS.</p>`;
+      }
+    }
+  </script>
 </body>
 </html>
